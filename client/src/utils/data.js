@@ -7,6 +7,8 @@ export const genders = [
   "Documental",
   "Drama",
   "Fantasía",
+  "Terror",
+  "Suspenso"
 ];
 
 export const lefthNumYear = ["18","19","20"]
