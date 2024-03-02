@@ -15,7 +15,7 @@ export default function ListFilm() {
           <div key={film.id} className="film">
             <p>Id: {film.id}</p>
             <h2>Título: {film.title}</h2>
-            <h3>Estreno: {film.estreno}</h3>
+            <h3>Estreno: {film.estrenoLefth + film.estrenoCenter + film.estrenoRight}</h3>
             <p>Género: {film.genero}</p>
           </div>
         );

@@ -3,11 +3,15 @@ import "../FormListFilm.css";
 
 import { store } from "../store/index.js";
 import { addOneFilm, deleteOneFilm } from "../store/actions.js";
+import { genders, lefthNumYear, rightNumYear } from "../utils/data.js";
+import generateID from "../utils/generateId.js";
 
 export default function FormListFilm({ renderActionExport }) {
   const [formData, setFormData] = useState({
     title: "",
-    estreno: "",
+    estrenoLefth: "19",
+    estrenoCenter: "0",
+    estrenoRight: "0",
     genero: "",
     id: "",
     idDelete: "",
@@ -22,45 +26,50 @@ export default function FormListFilm({ renderActionExport }) {
       [name]: updatedValue,
     });
   }
-
-  function addFilm(e) {
-    e.preventDefault();
-    store.dispatch("ADD_PELI", addOneFilm(formData));
+  function clearStateAndRender() {
     setFormData({
       title: "",
-      estreno: 1999,
+      estrenoLefth: "19",
+      estrenoCenter: "0",
+      estrenoRight: "0",
       genero: "",
       id: "",
       idDelete: "",
     });
     renderActionExport();
   }
+  function addFilm(e) {
+    e.preventDefault();
+    if (formData.title === "") {
+      alert("Debe escribir un título")
+      return
+    }
+    const newId = generateID()
+    const objData = { id: newId }
+
+    if (formData.genero === "") {
+      objData.genero = "No determinado"
+    }
+    setFormData({
+      ...formData,
+      ...objData
+    })
+    store.dispatch("ADD_PELI", addOneFilm({ ...formData, ...objData }));
+    clearStateAndRender()
+  }
 
   function deleteByIdFilm() {
+    if(formData.idDelete===""){
+      alert("Debe insertar un ID válido")
+      return
+    }
     store.dispatch("DELETE_PELI", deleteOneFilm(formData.idDelete));
-    setFormData({
-      title: "",
-      estreno: "",
-      genero: "",
-      id: "",
-      idDelete: "",
-    });
-    renderActionExport();
+    clearStateAndRender()
   }
   return (
     <div className="card">
       <form onSubmit={addFilm}>
         <div className="formList">
-          <label>
-            Id:{" "}
-            <input
-              type="number"
-              name="id"
-              key="id"
-              onChange={handleChange}
-              value={formData.id}
-            ></input>
-          </label>
           <label>
             Título:{" "}
             <input
@@ -74,24 +83,65 @@ export default function FormListFilm({ renderActionExport }) {
 
           <label>
             Estreno:{" "}
-            <input
-              type="number"
-              name="estreno"
-              value={formData.estreno}
-              key="estreno"
+            <select
+              name="estrenoLefth"
+              value={formData.estrenoLefth}
+              key="estrenoLefth"
               onChange={handleChange}
-            ></input>
+            >
+              {
+                lefthNumYear?.map((l, index) => {
+                  return (
+                    <option key={"11" + index} value={l}>{l}</option>
+                  )
+                })
+              }</select>
+            <select
+              name="estrenoCenter"
+              value={formData.estrenoCenter}
+              key="estrenoCenter"
+              onChange={handleChange}
+            >
+              {
+                rightNumYear?.map((c, index) => {
+                  return (
+                    <option key={"22" + index} value={c}>{c}</option>
+                  )
+                })
+              }</select>
+            <select
+              name="estrenoRight"
+              value={formData.estrenoRight}
+              key="estrenoRight"
+              onChange={handleChange}
+            >
+              {
+                rightNumYear?.map((r, index) => {
+                  return (
+                    <option key={"33" + index} value={r}>{r}</option>
+                  )
+                })
+              }</select>
+
           </label>
 
           <label>
             Género:{" "}
-            <input
-              type="text"
+            <select
               name="genero"
               value={formData.genero}
               key="genero"
               onChange={handleChange}
-            ></input>
+            >
+              <option value="" hidden>Seleccionar Género</option>
+              {
+                genders?.map((gender, index) => {
+                  return (
+                    <option key={index} value={gender}>{gender}</option>
+                  )
+                })
+              }
+            </select>
           </label>
         </div>
         <div className="btton">
